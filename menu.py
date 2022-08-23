@@ -5,7 +5,6 @@ import button
 import game
 
 
-
 pygame.init()
 
 
@@ -103,6 +102,7 @@ while run:
     if menu_state[0] == "a":
         play_game.draw_game(screen,menu_state)
         play_game.game_event()
+       
     
       
         

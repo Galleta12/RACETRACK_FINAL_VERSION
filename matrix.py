@@ -1,5 +1,6 @@
 import pygame
 import time
+from collections import deque
 
 RED = (255, 0, 0)
 GREEN = (0, 255, 0)
@@ -165,7 +166,7 @@ def draw_grid(win, rows, width):
             pygame.draw.line(win, GREY, (j * gap, 0), (j * gap, width))
 
 
-def draw(win, grid, rows, width,car = None):
+def draw(win, grid, rows, width,car = None, car2 = None):
     pygame.font.init()
     myfont = pygame.font.SysFont('Comic Sans MS', 30)
     myfonts = pygame.font.SysFont('Comic Sans MS', 30)
@@ -176,6 +177,8 @@ def draw(win, grid, rows, width,car = None):
             spot.draw(win)
     if car != None:
         car.draw_car(win)
+        if car2 !=None:
+            car2.draw_car(win)
         # x,y=car.get_velocity_spot()
         # textsurface = myfont.render("VelX: %s, VelY: %s"%(car.velx,car.vely), False, (0, 0, 0))
         # textsurfaces = myfonts.render("PosX: %s, PosY: %s"%(car.row,car.col), False, (0, 0, 0))
@@ -183,6 +186,7 @@ def draw(win, grid, rows, width,car = None):
         # win.blit(textsurface,(0,0))
         # win.blit(textsurfaces,(0,30))
         # win.blit(textsurfacess,(0,60))
+    
 
     draw_grid(win, rows, width)
     pygame.display.update()
@@ -190,12 +194,14 @@ def draw(win, grid, rows, width,car = None):
 
 class Car(Spot):
     acceleration_options = [(dvx, dvy) for dvx in [-1, 0, 1] for dvy in [-1, 0, 1]]
-    def __init__(self, row, col, width, total_rows, value,type_spot,grid):
+    def __init__(self, row, col, width, total_rows, value,type_spot,grid,color_car,color_moves):
         super().__init__(row, col, width, total_rows, value,type_spot)
         self.row = row
         self.col = col
         self.velx = 0
         self.vely = 0
+        self.color_car = color_car
+        self.color_moves = color_moves
         self.moves_car = []
         self.moves_spot =[]
         self.state = ()
@@ -208,11 +214,11 @@ class Car(Spot):
         self.path_nodes = []
     def draw_car(self, win):
         # will draw the car and the possible moves
-        pygame.draw.circle(win, GREEN, (self.x +8 , self.y + 7), self.r)
+        pygame.draw.circle(win, self.color_car, (self.x +8 , self.y + 7), self.r)
         if self.moves_spot:
             for spot in self.moves_spot:
                 if spot.get_pos() != self.get_pos():
-                    pygame.draw.circle(win, ORANGE, (spot.x +8 , spot.y + 7), self.r - 2)
+                    pygame.draw.circle(win, self.color_moves, (spot.x +8 , spot.y + 7), self.r - 2)
      
 
     #update the position of the car           
@@ -271,7 +277,24 @@ class Car(Spot):
         self.draw_car(win)
         pygame.display.update()
         pygame.display.flip()
+    def automate_move_play(self,win,end):
         
+        self.path_nodes = deque(self.path_nodes)
+        current = self.path_nodes.pop()
+        #print(current)
+        self.update(current.row,current.col)
+        self.update_x_y_pos()
+        self.draw_car(win)
+        
+        pygame.display.update()
+        pygame.display.flip()
+        if not self.path_nodes:
+            self.update(end.row,end.col)
+            self.update_x_y_pos()
+            self.draw_car(win)
+            pygame.display.update()
+            pygame.display.flip()
+
         
                    
     def save_path_nodes(self,path_nodes):
