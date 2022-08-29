@@ -277,6 +277,8 @@ class Car(Spot):
         self.draw_car(win)
         pygame.display.update()
         pygame.display.flip()
+    
+    
     def automate_move_play(self,win,end):
         
         self.path_nodes = deque(self.path_nodes)
