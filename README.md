@@ -6,3 +6,5 @@ This is the implementation  A star and Breadth First Search in the game racetrac
 This was developed with Pygame.
 
 Picture of the project.
+
+![Capture](https://user-images.githubusercontent.com/79543944/229327832-00b2b61a-5be7-4e26-9491-756c8d501258.PNG)
